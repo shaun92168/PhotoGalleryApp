@@ -18,16 +18,16 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
 
-    <EditText
-        android:id="@+id/editTextDateMain"
+    <TextView
+        android:id="@+id/TextViewDate"
         android:layout_width="153dp"
         android:layout_height="34dp"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:autoText="false"
         android:ems="10"
         android:inputType="date"
+        android:text="2020"
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewMain" />
@@ -42,7 +42,7 @@
         android:hint="@string/edit_latitude_hint"
         android:inputType="numberSigned|numberDecimal"
         android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editTextDateMain"
+        app:layout_constraintBaseline_toBaselineOf="@+id/TextViewDate"
         app:layout_constraintEnd_toStartOf="@+id/editTextNumberDecimalLongitudeMain" />
 
     <EditText
@@ -74,7 +74,7 @@
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextDateMain" />
+        app:layout_constraintTop_toBottomOf="@+id/TextViewDate" />
 
     <Button
         android:id="@+id/buttonFilterMain"
