@@ -6,26 +6,133 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginLeft="24dp"
-        android:onClick="sendMessage"
-        android:text="@string/button_send"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editText"
-        app:layout_constraintStart_toEndOf="@+id/editText" />
+    <ImageView
+        android:id="@+id/imageViewMain"
+        android:layout_width="297dp"
+        android:layout_height="278dp"
+        android:layout_marginTop="16dp"
+        android:background="#000000"
+        android:contentDescription="@string/iv_content_descrip"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <EditText
-        android:id="@+id/editText"
-        android:layout_width="177dp"
-        android:layout_height="47dp"
+        android:id="@+id/editTextDateMain"
+        android:layout_width="153dp"
+        android:layout_height="34dp"
         android:layout_marginStart="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
+        android:autoText="false"
         android:ems="10"
-        android:inputType="textPersonName"
+        android:inputType="date"
+        android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/imageViewMain" />
+
+    <EditText
+        android:id="@+id/editTextNumberDecimalLatitudeMain"
+        android:layout_width="73dp"
+        android:layout_height="34dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginRight="8dp"
+        android:ems="10"
+        android:hint="@string/edit_latitude_hint"
+        android:inputType="numberSigned|numberDecimal"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editTextDateMain"
+        app:layout_constraintEnd_toStartOf="@+id/editTextNumberDecimalLongitudeMain" />
+
+    <EditText
+        android:id="@+id/editTextNumberDecimalLongitudeMain"
+        android:layout_width="73dp"
+        android:layout_height="34dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:ems="10"
+        android:hint="@string/edit_longitude_hint"
+        android:inputType="numberSigned|numberDecimal"
+        android:textSize="12sp"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editTextNumberDecimalLatitudeMain"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <EditText
+        android:id="@+id/editTextCaptionMain"
+        android:layout_width="203dp"
+        android:layout_height="34dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/edit_caption_hint"
+        android:inputType="textPersonName"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextDateMain" />
+
+    <Button
+        android:id="@+id/buttonFilterMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="108dp"
+        android:layout_marginLeft="108dp"
+        android:layout_marginBottom="24dp"
+        android:onClick="sendMessage"
+        android:text="@string/button_filter"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonUploadMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="108dp"
+        android:layout_marginRight="108dp"
+        android:layout_marginBottom="24dp"
+        android:text="@string/button_upload"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/buttonLeftMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/button_left"
+        app:layout_constraintBottom_toTopOf="@+id/buttonFilterMain"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/buttonSnapMain"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/button_snap"
+        app:layout_constraintBottom_toTopOf="@+id/buttonFilterMain"
+        app:layout_constraintEnd_toStartOf="@+id/buttonRight"
+        app:layout_constraintStart_toEndOf="@+id/buttonLeftMain" />
+
+    <Button
+        android:id="@+id/buttonRight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="56dp"
+        android:layout_marginRight="56dp"
+        android:layout_marginBottom="16dp"
+        android:text="@string/button_right"
+        app:layout_constraintBottom_toTopOf="@+id/buttonUploadMain"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

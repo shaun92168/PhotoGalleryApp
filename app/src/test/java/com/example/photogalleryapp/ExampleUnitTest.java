@@ -1,6 +1,4 @@
-package com.example.myfirstapp;
-
-import com.example.myfirstapp.DataStorage.LocalStorage;
+package com.example.photogalleryapp;
 
 import org.junit.Test;
 
@@ -15,11 +13,5 @@ public class ExampleUnitTest {
     @Test
     public void addition_isCorrect() {
         assertEquals(4, 2 + 2);
-    }
-    @Test
-    public void localstoragetest() {
-        LocalStorage localStorage = new LocalStorage();
-        localStorage.setData("testing");
-        assertEquals("testing", localStorage.getData());
     }
 }

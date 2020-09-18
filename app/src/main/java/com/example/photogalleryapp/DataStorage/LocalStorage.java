@@ -1,4 +1,4 @@
-package com.example.myfirstapp.DataStorage;
+package com.example.photogalleryapp.DataStorage;
 
 public class LocalStorage {
     String data;
