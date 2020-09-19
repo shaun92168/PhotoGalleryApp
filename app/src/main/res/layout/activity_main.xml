@@ -9,9 +9,10 @@
     <ImageView
         android:id="@+id/imageViewMain"
         android:layout_width="297dp"
+        android:src="@drawable/ic_baseline_image_24"
         android:layout_height="278dp"
         android:layout_marginTop="16dp"
-        android:background="#000000"
+
         android:contentDescription="@string/iv_content_descrip"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
