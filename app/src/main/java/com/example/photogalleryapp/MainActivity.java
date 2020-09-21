@@ -16,6 +16,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                 askPermission();
             }
         });
+
     }
 
     private ArrayList<String> findPhotos() {
@@ -169,7 +171,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-            image.setImageBitmap(BitmapFactory.decodeFile(currentPhotoPath));
+                Bitmap original, newBitmap;
+                original = (BitmapFactory.decodeFile(currentPhotoPath));
+            // Temp fix for the image orientation problem. Camera intent is rotated still.
+            image.setImageBitmap(rotateImage(original, 90));
             // Better resolution than Bitmap
 //            File f = new File(currentPhotoPath);
 //            image.setImageURI(Uri.fromFile(f));
@@ -242,6 +247,16 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
+    }
+
+    public static Bitmap rotateImage(Bitmap source, float angle) {
+        Bitmap retVal;
+
+        Matrix matrix = new Matrix();
+        matrix.postRotate(angle);
+        retVal = Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+
+        return retVal;
     }
 
     public void sendMessage(View view) {
