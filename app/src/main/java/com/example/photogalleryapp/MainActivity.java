@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -35,6 +36,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 
@@ -42,6 +44,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001;
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    private ArrayList<String> photos = null;
+    private int index = 0;
 
     TextView dateTextView;
     EditText latEditText, longiEditText, captionEditText;
@@ -63,8 +67,16 @@ public class MainActivity extends AppCompatActivity {
         rightBtn = (Button) findViewById(R.id.buttonRight);
         snapBtn = (Button) findViewById(R.id.buttonSnapMain);
         uploadBtn = (Button) findViewById(R.id.buttonUploadMain);
-
         image = (ImageView) findViewById(R.id.imageViewMain);
+
+        photos = findPhotos();
+        if (photos.size() == 0) {
+            displayPhoto(null);
+        } else {
+            displayPhoto(photos.get(index));
+        }
+
+        // Ask permission and take photo
         snapBtn.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -72,8 +84,65 @@ public class MainActivity extends AppCompatActivity {
                 //Toast.makeText(MainActivity.this, "Camera is clicked", Toast.LENGTH_SHORT).show();
                 askPermission();
             }
-
         });
+    }
+
+    private ArrayList<String> findPhotos() {
+        ArrayList<String> photos = new ArrayList<String>();
+//        File file = new File(Environment.getExternalStorageDirectory()
+//                .getAbsolutePath(), "/Android/data/com.example.photoGallery/files/Pictures");
+        //String path = Environment.getExternalStorageDirectory().getPath()+"/Android/data/com.example.photoGallery/files/Pictures";
+        File file = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES)));
+        //Log.d("Files", "Path: " + path);
+
+        File[] fList = file.listFiles();
+        Log.d("Files", "file: "+ file);
+        Log.d("Files", "Size: "+ fList);
+
+        if (fList != null) {
+            for (File f : fList) {
+                photos.add(f.getPath());
+            }
+        }
+        return photos;
+    }
+    private void updatePhoto(String path, String caption) {
+        updatePhoto(photos.get(index), (captionEditText).getText().toString());
+        String[] attr = path.split("_");
+        if (attr.length >= 3) {
+            File to = new File(attr[0] + "_" + caption + "_" + attr[2] + "_" + attr[3]);
+            File from = new File(path);
+            from.renameTo(to);
+        }
+    }
+    public void scrollPhotos(View v) {
+        switch (v.getId()) {
+            case R.id.buttonLeftMain:
+                if (index > 0) {
+                    index--;
+                }
+                break;
+            case R.id.buttonRight:
+                if (index < (photos.size() - 1)) {
+                index++;
+            }
+            break;
+            default:
+                break;
+        }
+        displayPhoto(photos.get(index));
+    }
+    private void displayPhoto(String path) {
+        if (path == null || path =="") {
+            image.setImageResource(R.mipmap.ic_launcher);
+            captionEditText.setText("");
+            dateTextView.setText("");
+        } else {
+            image.setImageBitmap(BitmapFactory.decodeFile(path));
+            String[] attr = path.split("_");
+            captionEditText.setText(attr[1]);
+            dateTextView.setText(attr[2]);
+        }
     }
 
     private void askPermission() {
@@ -95,23 +164,22 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-
-            //ImageView mImageView = (ImageView) findViewById(R.id.imageViewMain);
-            //mImageView.setImageBitmap(BitmapFactory.decodeFile(currentPhotoPath));
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            image.setImageBitmap(BitmapFactory.decodeFile(currentPhotoPath));
             // Better resolution than Bitmap
-            File f = new File(currentPhotoPath);
-            image.setImageURI(Uri.fromFile(f));
+//            File f = new File(currentPhotoPath);
+//            image.setImageURI(Uri.fromFile(f));
             // Location stored
-            Log.d("tag", "Absolute Url of Image is: "+ Uri.fromFile(f));
-
-            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-            Uri contentUri = Uri.fromFile(f);
-            mediaScanIntent.setData(contentUri);
-            this.sendBroadcast(mediaScanIntent);
+//            Log.d("tag", "Absolute Url of Image is: " + Uri.fromFile(f));
+//
+//            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//            Uri contentUri = Uri.fromFile(f);
+//            mediaScanIntent.setData(contentUri);
+//            this.sendBroadcast(mediaScanIntent);
         }
     }
 
@@ -122,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
         // Can append geoloction to file name for searching
-        String imageFileName = "JPEG_" + timeStamp + "_";
+        String imageFileName = "_caption_" + timeStamp + "_";
 
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
 //        File dir = new File(storageDir.getAbsolutePath() + "/PhotoGallery");
@@ -171,7 +239,7 @@ public class MainActivity extends AppCompatActivity {
                         "com.example.android.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-                startActivityForResult(takePictureIntent, IMAGE_CAPTURE_CODE);
+                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
     }

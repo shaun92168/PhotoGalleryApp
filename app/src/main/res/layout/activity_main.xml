@@ -28,7 +28,7 @@
         android:autoText="false"
         android:ems="10"
         android:inputType="date"
-        android:text="2020"
+        android:text=""
         android:textSize="12sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imageViewMain" />
@@ -107,7 +107,7 @@
         android:layout_marginStart="56dp"
         android:layout_marginLeft="56dp"
         android:layout_marginBottom="16dp"
-        android:text="@string/button_left"
+        android:text="prev" android:onClick="scrollPhotos"
         app:layout_constraintBottom_toTopOf="@+id/buttonFilterMain"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -132,7 +132,7 @@
         android:layout_marginEnd="56dp"
         android:layout_marginRight="56dp"
         android:layout_marginBottom="16dp"
-        android:text="@string/button_right"
+        android:text="next" android:onClick="scrollPhotos"
         app:layout_constraintBottom_toTopOf="@+id/buttonUploadMain"
         app:layout_constraintEnd_toEndOf="parent" />
 
