@@ -37,7 +37,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-@SuppressWarnings("deprecation")
+
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001;
@@ -99,6 +99,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
+
+            //ImageView mImageView = (ImageView) findViewById(R.id.imageViewMain);
+            //mImageView.setImageBitmap(BitmapFactory.decodeFile(currentPhotoPath));
             // Better resolution than Bitmap
             File f = new File(currentPhotoPath);
             image.setImageURI(Uri.fromFile(f));
@@ -119,75 +122,21 @@ public class MainActivity extends AppCompatActivity {
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
         // Can append geoloction to file name for searching
-        String imageFileName = timeStamp + "_";
+        String imageFileName = "JPEG_" + timeStamp + "_";
 
-        File storageDir = Environment.getExternalStorageDirectory();
-        File dir = new File(storageDir.getAbsolutePath() + "/PhotoGallery");
-        dir.mkdirs();
-
-        File image = File.createTempFile(
-                imageFileName,  /* prefix */
-                ".jpg",         /* suffix */
-                dir      /* directory */
-        );
-
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+//        File dir = new File(storageDir.getAbsolutePath() + "/PhotoGallery");
+//        dir.mkdirs();
+        File image = File.createTempFile(imageFileName, ".jpg",storageDir);
         // Saving to gallery instead
         //context.getExternalFilesDirs(null);
         //File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
         //File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
-        //        File image = File.createTempFile(
-        //                    imageFileName,  /* prefix */
-        //                    ".jpg",         /* suffix */
-        //                    storageDir      /* directory */
-        //            );
 
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
-
-        // Check SD card's paths
-        if (isSdCardExist()){
-        Log.d("tag", "SD card exist");
-        Log.d("tag", getSdCardPath());
-        Log.d("tag", getDefaultFilePath());
-        }
-
         return image;
     }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    // Check SD card exist or not
-    public static boolean isSdCardExist() {
-        return Environment.getExternalStorageState().equals(
-                Environment.MEDIA_MOUNTED);
-    }
-    // Get the root of SD card
-    public static String getSdCardPath() {
-        boolean exist = isSdCardExist();
-        String sdpath = "";
-        if (exist) {
-            sdpath = Environment.getExternalStorageDirectory()
-                    .getAbsolutePath();
-        } else {
-            sdpath = "Not Applicable";
-        }
-        return sdpath;
-    }
-
-    // Grant the default path for storing
-    public static String getDefaultFilePath() {
-        String filepath = "";
-        File file = new File(Environment.getExternalStorageDirectory(),
-                "abc.txt");
-        if (file.exists()) {
-            filepath = file.getAbsolutePath();
-        } else {
-            filepath = "Not Applicable";
-        }
-        return filepath;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
     // Handling permission result
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults){
@@ -203,8 +152,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
     }
-
-
 
     // Calling camera app with another intent
     private void dispatchTakePictureIntent() {
@@ -227,32 +174,6 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(takePictureIntent, IMAGE_CAPTURE_CODE);
             }
         }
-    }
-
-
-    private void setPic() {
-        // Get the dimensions of the View
-        int targetW = image.getWidth();
-        int targetH = image.getHeight();
-
-        // Get the dimensions of the bitmap
-        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-        bmOptions.inJustDecodeBounds = true;
-
-        int photoW = bmOptions.outWidth;
-        int photoH = bmOptions.outHeight;
-
-        // Determine how much to scale down the image
-        int scaleFactor = Math.min(photoW/targetW, photoH/targetH);
-
-        // Decode the image file into a Bitmap sized to fill the View
-        bmOptions.inJustDecodeBounds = false;
-        bmOptions.inSampleSize = scaleFactor;
-        bmOptions.inPurgeable = true;
-
-        Bitmap bitmap = BitmapFactory.decodeFile(currentPhotoPath, bmOptions);
-        image.setImageBitmap(bitmap);
-        Toast.makeText(MainActivity.this, "Saved memory by decoding", Toast.LENGTH_SHORT).show();
     }
 
     public void sendMessage(View view) {
