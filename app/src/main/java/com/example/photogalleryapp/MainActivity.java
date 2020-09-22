@@ -17,6 +17,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -45,6 +47,8 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001;
     static final int REQUEST_IMAGE_CAPTURE = 1;
+    private static final int SEARCH_ACTIVITY_REQUEST_CODE = 1;
+    public String currentPhotoPath;
     private ArrayList<String> photos = null;
     private int index = 0;
 
@@ -70,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         uploadBtn = (Button) findViewById(R.id.buttonUploadMain);
         image = (ImageView) findViewById(R.id.imageViewMain);
 
-        photos = findPhotos();
+        photos = findPhotos(new Date(Long.MIN_VALUE), new Date(), "");
         if (photos.size() == 0) {
             displayPhoto(null);
         } else {
@@ -89,21 +93,18 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private ArrayList<String> findPhotos() {
-        ArrayList<String> photos = new ArrayList<String>();
-//        File file = new File(Environment.getExternalStorageDirectory()
-//                .getAbsolutePath(), "/Android/data/com.example.photoGallery/files/Pictures");
-        //String path = Environment.getExternalStorageDirectory().getPath()+"/Android/data/com.example.photoGallery/files/Pictures";
+
+    private ArrayList<String> findPhotos(Date startTimestamp, Date endTimestamp, String keywords) {
         File file = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES)));
-        //Log.d("Files", "Path: " + path);
-
+        ArrayList<String> photos = new ArrayList<String>();
         File[] fList = file.listFiles();
-        Log.d("Files", "file: "+ file);
-        Log.d("Files", "Size: "+ fList);
-
         if (fList != null) {
             for (File f : fList) {
-                photos.add(f.getPath());
+                // || f.getPath().contains(keywords) returns null which leads to crash of camera saving images
+                if (((startTimestamp == null && endTimestamp == null) || (f.lastModified() >= startTimestamp.getTime()
+                        && f.lastModified() <= endTimestamp.getTime())
+                ) && (keywords == "" ))
+                    photos.add(f.getPath());
             }
         }
         return photos;
@@ -167,29 +168,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-                Bitmap original, newBitmap;
-                original = (BitmapFactory.decodeFile(currentPhotoPath));
-            // Temp fix for the image orientation problem. Camera intent is rotated still.
-            image.setImageBitmap(rotateImage(original, 90));
-            // Better resolution than Bitmap
-//            File f = new File(currentPhotoPath);
-//            image.setImageURI(Uri.fromFile(f));
-            // Location stored
-//            Log.d("tag", "Absolute Url of Image is: " + Uri.fromFile(f));
-//
-//            Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-//            Uri contentUri = Uri.fromFile(f);
-//            mediaScanIntent.setData(contentUri);
-//            this.sendBroadcast(mediaScanIntent);
-        }
-    }
-
     // Save image with timestamp caption
-    String currentPhotoPath;
+
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -209,6 +189,76 @@ public class MainActivity extends AppCompatActivity {
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+//        if (requestCode == SEARCH_ACTIVITY_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                DateFormat format = new SimpleDateFormat("yyyy‐MM‐dd HH:mm:ss");
+                Date startTimestamp , endTimestamp;
+                try {
+                    String from = (String) data.getStringExtra("STARTTIMESTAMP");
+                    String to = (String) data.getStringExtra("ENDTIMESTAMP");
+                    startTimestamp = format.parse(from);
+                    endTimestamp = format.parse(to);
+                } catch (Exception ex) {
+                    startTimestamp = null;
+                    endTimestamp = null;
+                }
+                String keywords = (String) data.getStringExtra("KEYWORDS");
+                index = 0;
+                photos = findPhotos(startTimestamp, endTimestamp, keywords);
+                if (photos.size() == 0) {
+                    displayPhoto(null);
+                } else {
+                    displayPhoto(photos.get(index));
+                }
+            }
+//        }
+        if (resultCode == RESULT_OK) {
+            Bitmap original;
+            original = (BitmapFactory.decodeFile(currentPhotoPath));
+            // Temp fix for the image orientation problem. Camera intent is rotated still.
+
+
+            //image.setImageBitmap(original);
+            // Attempt for fixing rotated camera intent
+            ExifInterface ei = null;
+            try {
+                ei = new ExifInterface(currentPhotoPath);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                    ExifInterface.ORIENTATION_UNDEFINED);
+
+            Bitmap rotatedBitmap = null;
+            switch(orientation) {
+
+                case ExifInterface.ORIENTATION_ROTATE_90:
+                    rotatedBitmap = rotateImage(original, 90);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_180:
+                    rotatedBitmap = rotateImage(original, 180);
+                    break;
+
+                case ExifInterface.ORIENTATION_ROTATE_270:
+                    rotatedBitmap = rotateImage(original, 270);
+                    break;
+
+                case ExifInterface.ORIENTATION_NORMAL:
+                default:
+                    rotatedBitmap = original;
+            }
+            photos = findPhotos(new Date(Long.MIN_VALUE), new Date(), "");
+            // Not really working
+            image.setImageBitmap(rotatedBitmap);
+            // Works for now
+            image.setRotation(90);
+
+        }
     }
 
     // Handling permission result
