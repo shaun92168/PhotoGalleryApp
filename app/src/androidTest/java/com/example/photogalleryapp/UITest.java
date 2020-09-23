@@ -20,8 +20,13 @@ public class UITest {
 
     @Test
     public void listGoesOverTheFold() {
-//        onView(withId(R.id.editText)).perform(typeText("This is a Test"), closeSoftKeyboard());
-//        onView(withId(R.id.button)).perform(click());
-//        onView(withId(R.id.textView)).check(matches(withText("This is a Test")));
+        onView(withId(R.id.buttonSearchMain)).perform(click());
+        onView(withId(R.id.etFromDateTime)).perform(typeText("2020-09-22 00:00:00"), closeSoftKeyboard());
+        onView(withId(R.id.etToDateTime)).perform(typeText("2020-09-22 23:59:59"), closeSoftKeyboard());
+        onView(withId(R.id.etKeywords)).perform(typeText("Caption 1"), closeSoftKeyboard());
+        onView(withId(R.id.go)).perform(click());
+        onView(withId(R.id.editTextCaptionMain)).check(matches(withText("Caption 1")));
+        onView(withId(R.id.buttonRight)).perform(click());
+        onView(withId(R.id.buttonLeftMain)).perform(click());
     }
 }

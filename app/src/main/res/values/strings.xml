@@ -6,8 +6,9 @@
     <string name="button_left">LEFT</string>
     <string name="button_right">RIGHT</string>
     <string name="button_snap">SNAP</string>
-    <string name="button_filter">FILTER</string>
+    <string name="button_search">SEARCH</string>
     <string name="button_upload">UPLOAD</string>
+    <string name="tv_date">Date:</string>
     <string name="edit_caption_hint">Enter photo caption</string>
     <string name="edit_longitude_hint">longitude</string>
     <string name="edit_latitude_hint">latitude</string>
