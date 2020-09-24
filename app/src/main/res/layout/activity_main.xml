@@ -7,7 +7,7 @@
     tools:context=".MainActivity">
 
     <ImageView
-        android:id="@+id/imageViewMain"
+        android:id="@+id/imViewMain"
         android:layout_width="297dp"
         android:layout_height="278dp"
         android:layout_marginTop="16dp"
@@ -20,18 +20,18 @@
         tools:srcCompat="@drawable/ic_launcher_foreground" />
 
     <TextView
-        android:id="@+id/TextViewDate"
+        android:id="@+id/tvDate"
         android:layout_width="33dp"
         android:layout_height="21dp"
         android:layout_marginStart="16dp"
         android:ems="10"
         android:text="@string/tv_date"
         android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editTextDate"
+        app:layout_constraintBaseline_toBaselineOf="@+id/etDate"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
-        android:id="@+id/editTextNumberDecimalLatitudeMain"
+        android:id="@+id/etNumDecLatitudeMain"
         android:layout_width="73dp"
         android:layout_height="34dp"
         android:layout_marginEnd="16dp"
@@ -39,11 +39,11 @@
         android:hint="@string/edit_latitude_hint"
         android:inputType="numberSigned|numberDecimal"
         android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editTextDate"
-        app:layout_constraintEnd_toStartOf="@+id/editTextNumberDecimalLongitudeMain" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/etDate"
+        app:layout_constraintEnd_toStartOf="@+id/etNumDecLongitudeMain" />
 
     <EditText
-        android:id="@+id/editTextNumberDecimalLongitudeMain"
+        android:id="@+id/etNumDecLongitudeMain"
         android:layout_width="73dp"
         android:layout_height="34dp"
         android:layout_marginEnd="16dp"
@@ -51,11 +51,11 @@
         android:hint="@string/edit_longitude_hint"
         android:inputType="numberSigned|numberDecimal"
         android:textSize="12sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/editTextNumberDecimalLatitudeMain"
+        app:layout_constraintBaseline_toBaselineOf="@+id/etNumDecLatitudeMain"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
-        android:id="@+id/editTextCaptionMain"
+        android:id="@+id/etCaptionMain"
         android:layout_width="203dp"
         android:layout_height="34dp"
         android:layout_marginStart="16dp"
@@ -70,10 +70,10 @@
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/TextViewDate" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDate" />
 
     <Button
-        android:id="@+id/buttonSearchMain"
+        android:id="@+id/btSearchMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="108dp"
@@ -84,7 +84,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/buttonUploadMain"
+        android:id="@+id/btUploadMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="108dp"
@@ -95,7 +95,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/buttonLeftMain"
+        android:id="@+id/btLeftMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="56dp"
@@ -103,11 +103,11 @@
         android:layout_marginBottom="16dp"
         android:onClick="scrollPhotos"
         android:text="prev"
-        app:layout_constraintBottom_toTopOf="@+id/buttonSearchMain"
+        app:layout_constraintBottom_toTopOf="@+id/btSearchMain"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
-        android:id="@+id/buttonSnapMain"
+        android:id="@+id/btSnapMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
@@ -116,12 +116,12 @@
         android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:text="@string/button_snap"
-        app:layout_constraintBottom_toTopOf="@+id/buttonSearchMain"
-        app:layout_constraintEnd_toStartOf="@+id/buttonRight"
-        app:layout_constraintStart_toEndOf="@+id/buttonLeftMain" />
+        app:layout_constraintBottom_toTopOf="@+id/btSearchMain"
+        app:layout_constraintEnd_toStartOf="@+id/btRight"
+        app:layout_constraintStart_toEndOf="@+id/btLeftMain" />
 
     <Button
-        android:id="@+id/buttonRight"
+        android:id="@+id/btRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="56dp"
@@ -129,18 +129,18 @@
         android:layout_marginBottom="16dp"
         android:onClick="scrollPhotos"
         android:text="next"
-        app:layout_constraintBottom_toTopOf="@+id/buttonUploadMain"
+        app:layout_constraintBottom_toTopOf="@+id/btUploadMain"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
-        android:id="@+id/editTextDate"
+        android:id="@+id/etDate"
         android:layout_width="144dp"
         android:layout_height="34dp"
         android:layout_marginTop="16dp"
         android:ems="10"
         android:inputType="date"
         android:textSize="12sp"
-        app:layout_constraintStart_toEndOf="@+id/TextViewDate"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewMain" />
+        app:layout_constraintStart_toEndOf="@+id/tvDate"
+        app:layout_constraintTop_toBottomOf="@+id/imViewMain" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@ import android.view.View; import android.widget.EditText;
 import java.text.DateFormat; import java.text.SimpleDateFormat;
 import java.util.Calendar; import java.util.Date;
 import java.util.Locale;
+
 public class SearchActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,9 +27,11 @@ public class SearchActivity extends AppCompatActivity {
                     "yyyy‐MM‐dd HH:mm:ss", Locale.getDefault()).format(tomorrow));
         } catch (Exception ex) { }
     }
+
     public void cancel(final View v) {
         finish();
     }
+
     public void go(final View v) {
         Intent i = new Intent();
         EditText from = (EditText) findViewById(R.id.etFromDateTime);

@@ -6,6 +6,7 @@ import org.junit.Rule;
 import org.junit.Test;
 
 import static androidx.test.espresso.Espresso.onView;
+import static androidx.test.espresso.action.ViewActions.clearText;
 import static androidx.test.espresso.action.ViewActions.click;
 import static androidx.test.espresso.action.ViewActions.closeSoftKeyboard;
 import static androidx.test.espresso.action.ViewActions.typeText;
@@ -20,13 +21,15 @@ public class UITest {
 
     @Test
     public void listGoesOverTheFold() {
-        onView(withId(R.id.buttonSearchMain)).perform(click());
-        onView(withId(R.id.etFromDateTime)).perform(typeText("2020-09-22 00:00:00"), closeSoftKeyboard());
-        onView(withId(R.id.etToDateTime)).perform(typeText("2020-09-22 23:59:59"), closeSoftKeyboard());
-        onView(withId(R.id.etKeywords)).perform(typeText("Caption 1"), closeSoftKeyboard());
+        onView(withId(R.id.btSearchMain)).perform(click());
+        onView(withId(R.id.etFromDateTime)).perform(clearText());
+        onView(withId(R.id.etFromDateTime)).perform(typeText("2020-09-23 19:50:00"), closeSoftKeyboard());
+        onView(withId(R.id.etToDateTime)).perform(clearText());
+        onView(withId(R.id.etToDateTime)).perform(typeText("2020-09-23 19:57:00"), closeSoftKeyboard());
+        onView(withId(R.id.etKeywords)).perform(typeText("Photo 3"), closeSoftKeyboard());
         onView(withId(R.id.go)).perform(click());
-        onView(withId(R.id.editTextCaptionMain)).check(matches(withText("Caption 1")));
-        onView(withId(R.id.buttonRight)).perform(click());
-        onView(withId(R.id.buttonLeftMain)).perform(click());
+        onView(withId(R.id.etCaptionMain)).check(matches(withText("Photo 3")));
+        onView(withId(R.id.btRight)).perform(click());
+        onView(withId(R.id.btLeftMain)).perform(click());
     }
 }

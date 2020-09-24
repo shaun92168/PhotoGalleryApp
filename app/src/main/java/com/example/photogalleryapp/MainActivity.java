@@ -2,16 +2,10 @@ package com.example.photogalleryapp;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -23,7 +17,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,11 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -47,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001;
     static final int REQUEST_IMAGE_CAPTURE = 1;
-    private static final int SEARCH_ACTIVITY_REQUEST_CODE = 1;
+    private static final int SEARCH_ACTIVITY_REQUEST_CODE = 2;
     public String currentPhotoPath;
     private ArrayList<String> photos = null;
     private int index = 0;
@@ -63,16 +52,16 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        dateTextView = (TextView) findViewById(R.id.editTextDate);
-        latEditText = (EditText) findViewById(R.id.editTextNumberDecimalLatitudeMain);
-        longiEditText = (EditText) findViewById(R.id.editTextNumberDecimalLongitudeMain);
-        captionEditText = (EditText) findViewById(R.id.editTextCaptionMain);
+        dateTextView = (TextView) findViewById(R.id.etDate);
+        latEditText = (EditText) findViewById(R.id.etNumDecLatitudeMain);
+        longiEditText = (EditText) findViewById(R.id.etNumDecLongitudeMain);
+        captionEditText = (EditText) findViewById(R.id.etCaptionMain);
 
-        leftBtn = (Button) findViewById(R.id.buttonLeftMain);
-        rightBtn = (Button) findViewById(R.id.buttonRight);
-        snapBtn = (Button) findViewById(R.id.buttonSnapMain);
-        uploadBtn = (Button) findViewById(R.id.buttonUploadMain);
-        image = (ImageView) findViewById(R.id.imageViewMain);
+        leftBtn = (Button) findViewById(R.id.btLeftMain);
+        rightBtn = (Button) findViewById(R.id.btRight);
+        snapBtn = (Button) findViewById(R.id.btSnapMain);
+        uploadBtn = (Button) findViewById(R.id.btUploadMain);
+        image = (ImageView) findViewById(R.id.imViewMain);
 
         photos = findPhotos(new Date(Long.MIN_VALUE), new Date(), "");
         if (photos.size() == 0) {
@@ -86,13 +75,11 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                //Toast.makeText(MainActivity.this, "Camera is clicked", Toast.LENGTH_SHORT).show();
                 askPermission();
             }
         });
 
     }
-
 
     private ArrayList<String> findPhotos(Date startTimestamp, Date endTimestamp, String keywords) {
         File file = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES)));
@@ -100,33 +87,36 @@ public class MainActivity extends AppCompatActivity {
         File[] fList = file.listFiles();
         if (fList != null) {
             for (File f : fList) {
-                // || f.getPath().contains(keywords) returns null which leads to crash of camera saving images
-                if (((startTimestamp == null && endTimestamp == null) || (f.lastModified() >= startTimestamp.getTime()
-                        && f.lastModified() <= endTimestamp.getTime())
-                ) && (keywords == "" ))
+                if (   (   (startTimestamp == null && endTimestamp == null)
+                        || (   f.lastModified() >= startTimestamp.getTime()
+                            && f.lastModified() <= endTimestamp.getTime()))
+                    && (keywords.isEmpty() || f.getPath().contains(keywords) ))
                     photos.add(f.getPath());
             }
         }
         return photos;
     }
+
     private void updatePhoto(String path, String caption) {
         String[] attr = path.split("_");
         if (attr.length >= 3) {
             File to = new File(attr[0] + "_" + caption + "_" + attr[2] + "_" + attr[3]);
             File from = new File(path);
             from.renameTo(to);
+            photos.set(index, to.getPath());
         }
     }
+
     public void scrollPhotos(View v) {
         updatePhoto(photos.get(index), (captionEditText).getText().toString());
 
         switch (v.getId()) {
-            case R.id.buttonLeftMain:
+            case R.id.btLeftMain:
                 if (index > 0) {
                     index--;
                 }
                 break;
-            case R.id.buttonRight:
+            case R.id.btRight:
                 if (index < (photos.size() - 1)) {
                 index++;
             }
@@ -136,6 +126,7 @@ public class MainActivity extends AppCompatActivity {
         }
         displayPhoto(photos.get(index));
     }
+
     private void displayPhoto(String path) {
         if (path == null || path =="") {
             image.setImageResource(R.mipmap.ic_launcher);
@@ -170,27 +161,21 @@ public class MainActivity extends AppCompatActivity {
 
 
     // Save image with timestamp caption
-
     private File createImageFile() throws IOException {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
         // Can append geoloction to file name for searching
-        String imageFileName = "_caption_" + timeStamp + "_";
+        String imageFileName = "__" + timeStamp + "_";
 
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-//        File dir = new File(storageDir.getAbsolutePath() + "/PhotoGallery");
-//        dir.mkdirs();
-        File image = File.createTempFile(imageFileName, ".jpg",storageDir);
-        // Saving to gallery instead
-        //context.getExternalFilesDirs(null);
-        //File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        //File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
 
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
         return image;
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -219,16 +204,10 @@ public class MainActivity extends AppCompatActivity {
             }
         }
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
- /*           image.setImageBitmap((BitmapFactory.decodeFile(currentPhotoPath)));
-            photos = findPhotos(new Date(Long.MIN_VALUE), new Date(), "");
-*/
-
             Bitmap original;
             original = (BitmapFactory.decodeFile(currentPhotoPath));
             // Temp fix for the image orientation problem. Camera intent is rotated still.
 
-
-            //image.setImageBitmap(original);
             // Attempt for fixing rotated camera intent
             ExifInterface ei = null;
             try {
@@ -258,10 +237,13 @@ public class MainActivity extends AppCompatActivity {
                 default:
                     rotatedBitmap = original;
             }
-            photos = findPhotos(new Date(Long.MIN_VALUE), new Date(), "");
-            // Not really working
+
+            photos.add(currentPhotoPath);
+            index = photos.size() - 1;
+            updatePhoto(currentPhotoPath, "");
+            displayPhoto(currentPhotoPath);
+
             image.setImageBitmap(rotatedBitmap);
-            // Works for now
             image.setRotation(90);
         }
     }
@@ -296,7 +278,7 @@ public class MainActivity extends AppCompatActivity {
             // Continue only if the File was successfully created
             if (photoFile != null) {
                 Uri photoURI = FileProvider.getUriForFile(this,
-                        "com.example.android.fileprovider",
+                        "com.example.photogalleryapp.fileprovider",
                         photoFile);
                 takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
@@ -318,8 +300,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, SearchActivity.class);
 
         // Do any initialization of the Search Intent controls here
-
-        startActivity(intent);
-
+        startActivityForResult(intent, SEARCH_ACTIVITY_REQUEST_CODE);
     }
 }
