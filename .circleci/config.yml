@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/code
     docker:
-      - image: circleci/android:api-28
+      - image: circleci/android:api-28-alpha
         auth:
           username: shaun92168
           password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
@@ -48,8 +48,8 @@ jobs:
           name: Test with Firebase Test Lab
           command: >
             sudo gcloud firebase test android run \ 
-              --app <local_server_path>/<app_apk>.apk \ 
-              --test <local_server_path>/<app_test_apk>.apk \ 
+              --app /app/build/outputs/apk/debug/app-debug.apk \ 
+              --test /app/build/outputs/apk/androidTest/debug/app-debug-androidTest.apk \ 
               --results-bucket cloud-test-${GOOGLE_PROJECT_ID}
       - run:
           name: Install gsutil dependency and copy test results data
