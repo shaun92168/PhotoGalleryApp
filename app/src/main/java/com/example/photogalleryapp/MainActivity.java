@@ -1,10 +1,5 @@
 package com.example.photogalleryapp;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.FileProvider;
-
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -23,6 +18,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 
 import java.io.File;
 import java.io.IOException;
@@ -193,6 +193,8 @@ public class MainActivity extends AppCompatActivity {
                     endTimestamp = null;
                 }
                 String keywords = (String) data.getStringExtra("KEYWORDS");
+                String latitude = (String) data.getStringExtra("LAT");
+                String longitude = (String) data.getStringExtra("LNG");
                 index = 0;
                 photos = findPhotos(startTimestamp, endTimestamp, keywords);
 

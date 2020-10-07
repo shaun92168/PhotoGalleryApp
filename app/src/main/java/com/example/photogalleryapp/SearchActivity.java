@@ -1,10 +1,16 @@
 package com.example.photogalleryapp;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+
 import androidx.appcompat.app.AppCompatActivity;
-import android.content.Intent; import android.os.Bundle;
-import android.view.View; import android.widget.EditText;
-import java.text.DateFormat; import java.text.SimpleDateFormat;
-import java.util.Calendar; import java.util.Date;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 public class SearchActivity extends AppCompatActivity {
@@ -37,9 +43,14 @@ public class SearchActivity extends AppCompatActivity {
         EditText from = (EditText) findViewById(R.id.etFromDateTime);
         EditText to = (EditText) findViewById(R.id.etToDateTime);
         EditText keywords = (EditText) findViewById(R.id.etKeywords);
+        EditText lat = (EditText) findViewById(R.id.etLat);
+        EditText lng = (EditText) findViewById(R.id.etLng);
+
         i.putExtra("STARTTIMESTAMP", from.getText() != null ? from.getText().toString() : "");
         i.putExtra("ENDTIMESTAMP", to.getText() != null ? to.getText().toString() : "");
         i.putExtra("KEYWORDS", keywords.getText() != null ? keywords.getText().toString() : "");
+        i.putExtra("LAT", lat.getText() != null ? lat.getText().toString() : "");
+        i.putExtra("LNG", lng.getText() != null ? lng.getText().toString() : "");
         setResult(RESULT_OK, i);
         finish();
     }
