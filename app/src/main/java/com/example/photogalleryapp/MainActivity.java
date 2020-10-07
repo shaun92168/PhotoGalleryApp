@@ -78,7 +78,30 @@ public class MainActivity extends AppCompatActivity {
                 askPermission();
             }
         });
+        uploadBtn.setOnClickListener(new View.OnClickListener() {
 
+            @Override
+            public void onClick(View v) {
+                try {
+                    upload();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
+    private void upload() throws IOException {
+        Intent shareIntent = new Intent();
+        shareIntent.setAction(Intent.ACTION_SEND);
+
+        File photoFile = createImageFile();
+        image_uri = FileProvider.getUriForFile(this,
+                "com.example.photogalleryapp.fileprovider",
+                photoFile);
+        shareIntent.putExtra(Intent.EXTRA_STREAM, image_uri);
+        shareIntent.setType("image/jpeg");
+        startActivity(Intent.createChooser(shareIntent, "Share the image by (Choose an app)"));
     }
 
     private ArrayList<String> findPhotos(Date startTimestamp, Date endTimestamp, String keywords) {
@@ -279,10 +302,10 @@ public class MainActivity extends AppCompatActivity {
             }
             // Continue only if the File was successfully created
             if (photoFile != null) {
-                Uri photoURI = FileProvider.getUriForFile(this,
+                image_uri = FileProvider.getUriForFile(this,
                         "com.example.photogalleryapp.fileprovider",
                         photoFile);
-                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, image_uri);
                 startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
             }
         }
