@@ -6,12 +6,15 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -40,11 +43,13 @@ public class MainActivity extends AppCompatActivity {
     public String currentPhotoPath;
     private ArrayList<String> photos = null;
     private int index = 0;
+    public String latitude;
+    public String longitude;
 
     TextView dateTextView;
     EditText latEditText, longiEditText, captionEditText;
     Button leftBtn, rightBtn, snapBtn, uploadBtn;
-    Uri image_uri;
+    public static Uri image_uri;
     ImageView image;
 
     @Override
@@ -92,16 +97,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void upload() throws IOException {
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-
-        File photoFile = createImageFile();
-        image_uri = FileProvider.getUriForFile(this,
-                "com.example.photogalleryapp.fileprovider",
-                photoFile);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, image_uri);
-        shareIntent.setType("image/jpeg");
-        startActivity(Intent.createChooser(shareIntent, "Share the image by (Choose an app)"));
+        Drawable mDrawable = image.getDrawable();
+        Bitmap mBitmap = ((BitmapDrawable) mDrawable).getBitmap();
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "Image Description", null);
+        Uri uri = Uri.parse(path);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/jpeg");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(intent, "Share Image"));
     }
 
     private ArrayList<String> findPhotos(Date startTimestamp, Date endTimestamp, String keywords) {
