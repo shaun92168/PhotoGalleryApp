@@ -6,6 +6,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
@@ -93,16 +95,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void upload() throws IOException {
-        Intent shareIntent = new Intent();
-        shareIntent.setAction(Intent.ACTION_SEND);
-
-        File photoFile = createImageFile();
-        image_uri = FileProvider.getUriForFile(this,
-                "com.example.photogalleryapp.fileprovider",
-                photoFile);
-        shareIntent.putExtra(Intent.EXTRA_STREAM, image_uri);
-        shareIntent.setType("image/jpeg");
-        startActivity(Intent.createChooser(shareIntent, "Share the image by (Choose an app)"));
+        Drawable mDrawable = image.getDrawable();
+        Bitmap mBitmap = ((BitmapDrawable) mDrawable).getBitmap();
+        String path = MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "Image Description", null);
+        Uri uri = Uri.parse(path);
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("image/jpeg");
+        intent.putExtra(Intent.EXTRA_STREAM, uri);
+        startActivity(Intent.createChooser(intent, "Share Image"));
     }
 
     private ArrayList<String> findPhotos(Date startTimestamp, Date endTimestamp,
@@ -138,7 +138,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void scrollPhotos(View v) {
-        updatePhoto(photos.get(index), (captionEditText).getText().toString());
+        // Only updatePhoto if there is a photo otherwise an exception would throw
+        if (photos.size() > 0) {
+            updatePhoto(photos.get(index), (captionEditText).getText().toString());
+        }
 
         switch (v.getId()) {
             case R.id.btLeftMain:
@@ -154,7 +157,14 @@ public class MainActivity extends AppCompatActivity {
             default:
                 break;
         }
-        displayPhoto(photos.get(index));
+
+        // Can only display photo if there are some otherwise send null
+        if (photos.size() > 0) {
+            displayPhoto(photos.get(index));
+        }
+        else {
+            displayPhoto(null);
+        }
     }
 
     private void displayPhoto(String path) {

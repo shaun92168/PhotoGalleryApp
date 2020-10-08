@@ -18,5 +18,17 @@ public class UITest {
     @Rule
     public ActivityTestRule<MainActivity> activityRule =
             new ActivityTestRule<>(MainActivity.class);
-
+/*
+    @Test
+    public void listGoesOverTheFold() {
+        onView(withId(R.id.btSearchMain)).perform(click());
+        onView(withId(R.id.etFromDateTime)).perform(clearText());
+        onView(withId(R.id.etFromDateTime)).perform(typeText("2020-09-23 19:50:00"), closeSoftKeyboard());
+        onView(withId(R.id.etToDateTime)).perform(clearText());
+        onView(withId(R.id.etToDateTime)).perform(typeText("2020-10-10 19:57:00"), closeSoftKeyboard());
+        onView(withId(R.id.go)).perform(click());
+        onView(withId(R.id.btRight)).perform(click());
+        onView(withId(R.id.btLeftMain)).perform(click());
+    }
+ */
 }
