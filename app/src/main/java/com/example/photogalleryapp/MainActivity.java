@@ -22,6 +22,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         uploadBtn = (Button) findViewById(R.id.btUploadMain);
         image = (ImageView) findViewById(R.id.imViewMain);
 
-        photos = findPhotos(new Date(Long.MIN_VALUE), new Date(), "");
+        photos = findPhotos(new Date(Long.MIN_VALUE), new Date(), 0f, 0f,"");
         if (photos.size() == 0) {
             displayPhoto(null);
         } else {
@@ -104,7 +105,9 @@ public class MainActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(shareIntent, "Share the image by (Choose an app)"));
     }
 
-    private ArrayList<String> findPhotos(Date startTimestamp, Date endTimestamp, String keywords) {
+    private ArrayList<String> findPhotos(Date startTimestamp, Date endTimestamp,
+                                         double Latitude, double Longitude, String keywords)
+    {
         File file = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES)));
         ArrayList<String> photos = new ArrayList<String>();
         File[] fList = file.listFiles();
@@ -113,7 +116,10 @@ public class MainActivity extends AppCompatActivity {
                 if (   (   (startTimestamp == null && endTimestamp == null)
                         || (   f.lastModified() >= startTimestamp.getTime()
                             && f.lastModified() <= endTimestamp.getTime()))
-                    && (keywords.isEmpty() || f.getPath().contains(keywords) ))
+                    && (keywords.isEmpty() || f.getPath().contains(keywords))
+                    && (keywords.isEmpty() || f.getPath().contains(keywords))
+                    && (Latitude == 0.0f || f.getPath().contains(Double.toString(Latitude)))
+                    && (Longitude == 0.0f || f.getPath().contains(Double.toString(Longitude))) )
                     photos.add(f.getPath());
             }
         }
@@ -122,9 +128,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void updatePhoto(String path, String caption) {
         String[] attr = path.split("_");
-        if (attr.length >= 3) {
-            File to = new File(attr[0] + "_" + caption + "_" + attr[2] + "_" + attr[3]);
+        if (attr.length >= 5) {
+            File to = new File(attr[0] + "_" + caption + "_" + attr[2] + "_" + attr[3] + "_" + attr[4] + "_" + attr[5] + "_"  + ".jpeg");
             File from = new File(path);
+            from.renameTo(to);
             from.renameTo(to);
             photos.set(index, to.getPath());
         }
@@ -155,21 +162,31 @@ public class MainActivity extends AppCompatActivity {
             image.setImageResource(R.mipmap.ic_launcher);
             captionEditText.setText("");
             dateTextView.setText("");
+            latEditText.setText("");
+            longiEditText.setText("");
         } else {
             image.setImageBitmap(BitmapFactory.decodeFile(path));
             String[] attr = path.split("_");
             captionEditText.setText(attr[1]);
             dateTextView.setText(attr[2]);
+            latEditText.setText(attr[4]);
+            longiEditText.setText(attr[5]);
         }
     }
 
     private void askPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if (checkSelfPermission(Manifest.permission.CAMERA) ==
-                    PackageManager.PERMISSION_DENIED ||
-                    checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED) {
+            if (   checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED
+                || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED
+                || checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_DENIED
+                || checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_DENIED)
+            {
                 // Permission not granted, request it
-                String[] permission = {Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE};
+                String[] permission = {
+                        Manifest.permission.CAMERA,
+                        Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION };
                 requestPermissions(permission, PERMISSION_CODE);
             } else {
                 // Already granted permission
@@ -188,11 +205,29 @@ public class MainActivity extends AppCompatActivity {
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
+        // Get GPS data
+        double latitude = 0f;
+        double longitude = 0f;
+        GPSTracker gps = new GPSTracker(getApplicationContext());
+
+        if (gps.canGetLocation())
+        {
+            latitude = gps.getLatitude();
+            longitude = gps.getLongitude();
+
+            // \n is for new line
+            Toast.makeText(getApplicationContext(), "Your Location is - \nLat: " + latitude + "\nLong: " + longitude, Toast.LENGTH_LONG).show();
+        } else {
+            // Can't get location.
+            // GPS or network is not enabled.
+            // Ask user to enable GPS/network in settings.
+        }
+
         // Can append geoloction to file name for searching
-        String imageFileName = "__" + timeStamp + "_";
+        String imageFileName = "__" + timeStamp + "_" + latitude + "_" + longitude + "_";
 
         File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-        File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+        File image = File.createTempFile(imageFileName, ".jpeg", storageDir);
 
         // Save a file: path for use with ACTION_VIEW intents
         currentPhotoPath = image.getAbsolutePath();
@@ -216,10 +251,21 @@ public class MainActivity extends AppCompatActivity {
                     endTimestamp = null;
                 }
                 String keywords = (String) data.getStringExtra("KEYWORDS");
-                String latitude = (String) data.getStringExtra("LAT");
-                String longitude = (String) data.getStringExtra("LNG");
+                String slatitude = (String) data.getStringExtra("LAT");
+                String slongitude = (String) data.getStringExtra("LNG");
+                Double latitude = 0.0;
+                Double longitude = 0.0;
+                if (slatitude.isEmpty() == false)
+                {
+                    latitude = Double.valueOf( slatitude );
+                }
+                if (slongitude.isEmpty() == false)
+                {
+                    longitude = Double.valueOf( slongitude );
+                }
+
                 index = 0;
-                photos = findPhotos(startTimestamp, endTimestamp, keywords);
+                photos = findPhotos(startTimestamp, endTimestamp, latitude, longitude, keywords);
 
                 if (photos.size() == 0) {
                     displayPhoto(null);
@@ -231,8 +277,8 @@ public class MainActivity extends AppCompatActivity {
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
             Bitmap original;
             original = (BitmapFactory.decodeFile(currentPhotoPath));
-            // Temp fix for the image orientation problem. Camera intent is rotated still.
 
+            // Temp fix for the image orientation problem. Camera intent is rotated still.
             // Attempt for fixing rotated camera intent
             ExifInterface ei = null;
             try {
