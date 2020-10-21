@@ -3,8 +3,8 @@
     <string name="edit_message">Enter a message</string>
     <string name="button_send">Send</string>
     <string name="edit_caption">Caption</string>
-    <string name="button_left">LEFT</string>
-    <string name="button_right">RIGHT</string>
+    <string name="button_previous">PREV</string>
+    <string name="button_next">NEXT</string>
     <string name="button_snap">SNAP</string>
     <string name="button_search">SEARCH</string>
     <string name="button_upload">UPLOAD</string>

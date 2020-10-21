@@ -1,4 +1,4 @@
-package com.example.photogalleryapp;
+package com.example.photogalleryapp.Views;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -43,7 +43,7 @@ public class SearchActivity extends AppCompatActivity {
         EditText from = (EditText) findViewById(R.id.etFromDateTime);
         EditText to = (EditText) findViewById(R.id.etToDateTime);
         EditText keywords = (EditText) findViewById(R.id.etKeywords);
-        EditText lat = (EditText) findViewById(R.id.etLng);
+        EditText lat = (EditText) findViewById(R.id.etLat);
         EditText lng = (EditText) findViewById(R.id.etLng);
 
         i.putExtra("STARTTIMESTAMP", from.getText() != null ? from.getText().toString() : "");

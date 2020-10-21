@@ -2,6 +2,8 @@ package com.example.photogalleryapp;
 
 import androidx.test.rule.ActivityTestRule;
 
+import com.example.photogalleryapp.Views.GalleryActivity;
+
 import org.junit.Rule;
 import org.junit.Test;
 
@@ -16,8 +18,8 @@ import static androidx.test.espresso.matcher.ViewMatchers.withText;
 
 public class UITest {
     @Rule
-    public ActivityTestRule<MainActivity> activityRule =
-            new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<GalleryActivity> activityRule =
+            new ActivityTestRule<>(GalleryActivity.class);
 /*
     @Test
     public void listGoesOverTheFold() {

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".GalleryActivity">
 
     <ImageView
         android:id="@+id/imViewMain"
@@ -95,40 +95,25 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <Button
-        android:id="@+id/btLeftMain"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="56dp"
-        android:layout_marginLeft="56dp"
-        android:layout_marginBottom="16dp"
-        android:onClick="scrollPhotos"
-        android:text="prev"
-        app:layout_constraintBottom_toTopOf="@+id/btSearchMain"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
         android:id="@+id/btSnapMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="19dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
         android:layout_marginBottom="16dp"
         android:text="@string/button_snap"
         app:layout_constraintBottom_toTopOf="@+id/btSearchMain"
-        app:layout_constraintEnd_toStartOf="@+id/btRight"
-        app:layout_constraintStart_toEndOf="@+id/btLeftMain" />
+        app:layout_constraintEnd_toStartOf="@+id/btNext"
+        app:layout_constraintStart_toEndOf="@+id/btPrevious" />
 
     <Button
-        android:id="@+id/btRight"
+        android:id="@+id/btNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="56dp"
-        android:layout_marginRight="56dp"
         android:layout_marginBottom="16dp"
         android:onClick="scrollPhotos"
-        android:text="next"
+        android:text="@string/button_next"
         app:layout_constraintBottom_toTopOf="@+id/btUploadMain"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -142,5 +127,16 @@
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/tvDate"
         app:layout_constraintTop_toBottomOf="@+id/imViewMain" />
+
+    <Button
+        android:id="@+id/btPrevious"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="56dp"
+        android:layout_marginBottom="16dp"
+        android:onClick="scrollPhotos"
+        android:text="@string/button_previous"
+        app:layout_constraintBottom_toTopOf="@+id/btSearchMain"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
