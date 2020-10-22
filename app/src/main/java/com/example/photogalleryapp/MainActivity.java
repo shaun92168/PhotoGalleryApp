@@ -23,8 +23,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
 import androidx.core.content.FileProvider;
 
 import java.io.File;
@@ -32,9 +32,13 @@ import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+import java.util.stream.Stream;
 
 
+@RequiresApi(api = Build.VERSION_CODES.N)
 public class MainActivity extends AppCompatActivity {
     private static final int PERMISSION_CODE = 1000;
     private static final int IMAGE_CAPTURE_CODE = 1001;
@@ -74,22 +78,15 @@ public class MainActivity extends AppCompatActivity {
         }
 
         // Ask permission and take photo
-        snapBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                askPermission();
-            }
-        });
-        uploadBtn.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                try {
-                    upload();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+        snapBtn.setOnClickListener(view ->
+                askPermission()
+        );
+        uploadBtn.setOnClickListener(view ->
+        {
+            try {
+                upload();
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         });
     }
@@ -105,12 +102,28 @@ public class MainActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(intent, "Share Image"));
     }
 
+    //    List<Shape> blue = shapes.stream()
+    //            .filter(s -> s.getColor() == BLUE)
+    //            .collect(Collectors.toList());
+    @RequiresApi(api = Build.VERSION_CODES.N)
     private ArrayList<String> findPhotos(Date startTimestamp, Date endTimestamp,
                                          double Latitude, double Longitude, String keywords)
     {
         File file = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES)));
         ArrayList<String> photos = new ArrayList<String>();
         File[] fList = file.listFiles();
+// Concept
+//        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.N) {
+//            List<File> photosMatched=
+//                    photos.stream()
+//                            .filter(n -> {
+//                                System.out.println("photo list filtering" + n);
+//                                return startTimestamp == null && endTimestamp == null;
+//                            })
+//                            .forEach(s -> findPhotos(startTimestamp, endTimestamp, Latitude, Longitude, keywords));
+//
+//        }
+
         if (fList != null) {
             for (File f : fList) {
                 if (   (   (startTimestamp == null && endTimestamp == null)
@@ -126,15 +139,22 @@ public class MainActivity extends AppCompatActivity {
         return photos;
     }
 
+    //Concept only, it breaks the update function
     private void updatePhoto(String path, String caption) {
+        String[] attrArray =  path.split("_");
+        Stream<String> attrStream = Arrays.stream(attrArray);
+        Stream<String> newAttrStream = attrStream
+                .filter(s -> s.length() >= 5)
+                .sorted();
+        newAttrStream.forEach(s -> setPath(s, caption));
+    }
+    public void setPath(String path, String caption){
         String[] attr = path.split("_");
-        if (attr.length >= 5) {
-            File to = new File(attr[0] + "_" + caption + "_" + attr[2] + "_" + attr[3] + "_" + attr[4] + "_" + attr[5] + "_"  + ".jpeg");
-            File from = new File(path);
-            from.renameTo(to);
-            from.renameTo(to);
-            photos.set(index, to.getPath());
-        }
+        File to = new File(attr[0] + "_" + caption + "_" + attr[2] + "_" + attr[3] + "_" + attr[4] + "_" + attr[5] + "_"  + ".jpeg");
+        File from = new File(path);
+        from.renameTo(to);
+        from.renameTo(to);
+        photos.set(index, to.getPath());
     }
 
     public void scrollPhotos(View v) {
@@ -275,7 +295,9 @@ public class MainActivity extends AppCompatActivity {
                 }
 
                 index = 0;
-                photos = findPhotos(startTimestamp, endTimestamp, latitude, longitude, keywords);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                    photos = findPhotos(startTimestamp, endTimestamp, latitude, longitude, keywords);
+                }
 
                 if (photos.size() == 0) {
                     displayPhoto(null);
