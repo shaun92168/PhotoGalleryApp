@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
             displayPhoto(photos.get(index));
         }
 
+
         // Ask permission and take photo
         snapBtn.setOnClickListener(new View.OnClickListener() {
 
@@ -218,7 +219,8 @@ public class MainActivity extends AppCompatActivity {
         // Get GPS data
         double latitude = 0f;
         double longitude = 0f;
-        GPSTracker gps = new GPSTracker(getApplicationContext());
+
+        GPSTracker gps = GPSTracker.getInstance(getApplicationContext());
 
         if (gps.canGetLocation())
         {
@@ -231,6 +233,7 @@ public class MainActivity extends AppCompatActivity {
             // Can't get location.
             // GPS or network is not enabled.
             // Ask user to enable GPS/network in settings.
+            Toast.makeText(getApplicationContext(), "Cannot get location", Toast.LENGTH_LONG).show();
         }
 
         // Can append geoloction to file name for searching

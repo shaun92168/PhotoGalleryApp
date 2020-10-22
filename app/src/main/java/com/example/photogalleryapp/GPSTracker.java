@@ -56,10 +56,30 @@ public class GPSTracker extends Service implements LocationListener {
     private static final int INITIAL_REQUEST = 1337;
     private static final int LOCATION_REQUEST = INITIAL_REQUEST + 3;
 
-    public GPSTracker(Context context) {
+    private static GPSTracker INSTANCE = null;
+    private GPSTracker(Context context){
         this.mContext = context;
         getLocation();
     }
+
+    public static GPSTracker getInstance(Context context) {
+        if (INSTANCE == null) {
+            synchronized (GPSTracker.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new GPSTracker(context);
+                    System.out.println(INSTANCE.location);
+                }
+            }
+        }
+        return INSTANCE;
+    }
+
+    /*public GPSTracker(Context context) {
+        this.mContext = context;
+        getLocation();
+    }*/
+
+
 
     @SuppressLint("MissingPermission")
     public Location getLocation() {
