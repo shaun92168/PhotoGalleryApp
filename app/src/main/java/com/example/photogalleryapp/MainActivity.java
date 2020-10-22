@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity {
         uploadBtn = (Button) findViewById(R.id.btUploadMain);
         image = (ImageView) findViewById(R.id.imViewMain);
 
-        photos = findPhotos(new Date(Long.MIN_VALUE), new Date(), 0f, 0f,"");
+        SearchInput searchInput = new SearchInput("", "", "", "0", "0");
+        photos = findPhotos(searchInput);
         if (photos.size() == 0) {
             displayPhoto(null);
         } else {
@@ -105,12 +106,16 @@ public class MainActivity extends AppCompatActivity {
         startActivity(Intent.createChooser(intent, "Share Image"));
     }
 
-    private ArrayList<String> findPhotos(Date startTimestamp, Date endTimestamp,
-                                         double Latitude, double Longitude, String keywords)
+    private ArrayList<String> findPhotos(SearchInput searchInput)
     {
         File file = new File(String.valueOf(getExternalFilesDir(Environment.DIRECTORY_PICTURES)));
         ArrayList<String> photos = new ArrayList<String>();
         File[] fList = file.listFiles();
+        Date startTimestamp = searchInput.getStartTimestamp();
+        Date endTimestamp = searchInput.getEndTimestamp();
+        double Latitude = searchInput.getLatitude();
+        double Longitude = searchInput.getLongitude();
+        String keywords = searchInput.getKeyword();
         if (fList != null) {
             for (File f : fList) {
                 if (   (   (startTimestamp == null && endTimestamp == null)
@@ -249,33 +254,15 @@ public class MainActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SEARCH_ACTIVITY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                DateFormat format = new SimpleDateFormat("yyyy‐MM‐dd HH:mm:ss");
-                Date startTimestamp , endTimestamp;
-                try {
-                    String from = (String) data.getStringExtra("STARTTIMESTAMP");
-                    String to = (String) data.getStringExtra("ENDTIMESTAMP");
-                    startTimestamp = format.parse(from);
-                    endTimestamp = format.parse(to);
-                } catch (Exception ex) {
-                    startTimestamp = null;
-                    endTimestamp = null;
-                }
-                String keywords = (String) data.getStringExtra("KEYWORDS");
-                String slatitude = (String) data.getStringExtra("LAT");
-                String slongitude = (String) data.getStringExtra("LNG");
-                Double latitude = 0.0;
-                Double longitude = 0.0;
-                if (slatitude.isEmpty() == false)
-                {
-                    latitude = Double.valueOf( slatitude );
-                }
-                if (slongitude.isEmpty() == false)
-                {
-                    longitude = Double.valueOf( slongitude );
-                }
+
+                SearchInput searchInput = new SearchInput(data.getStringExtra("STARTTIMESTAMP"),
+                        data.getStringExtra("ENDTIMESTAMP"),
+                        data.getStringExtra("KEYWORDS"),
+                        data.getStringExtra("LAT"),
+                        data.getStringExtra("LNG"));
 
                 index = 0;
-                photos = findPhotos(startTimestamp, endTimestamp, latitude, longitude, keywords);
+                photos = findPhotos(searchInput);
 
                 if (photos.size() == 0) {
                     displayPhoto(null);
