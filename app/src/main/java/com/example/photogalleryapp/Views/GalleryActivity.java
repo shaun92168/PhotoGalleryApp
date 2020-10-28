@@ -84,7 +84,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryPresent
     }
 
 
-    private void upload() throws IOException {
+    void upload() throws IOException {
         Drawable mDrawable = image.getDrawable();
         Bitmap mBitmap = ((BitmapDrawable) mDrawable).getBitmap();
         String path = MediaStore.Images.Media.insertImage(getContentResolver(), mBitmap, "Image Description", null);
@@ -131,7 +131,7 @@ public class GalleryActivity extends AppCompatActivity implements GalleryPresent
     }
 
 
-    private void askPermission() {
+    void askPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (   checkSelfPermission(Manifest.permission.CAMERA) == PackageManager.PERMISSION_DENIED
                     || checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED

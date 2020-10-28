@@ -1,8 +1,5 @@
 <resources>
     <string name="app_name">Photo Gallery</string>
-    <string name="edit_message">Enter a message</string>
-    <string name="button_send">Send</string>
-    <string name="edit_caption">Caption</string>
     <string name="button_previous">PREV</string>
     <string name="button_next">NEXT</string>
     <string name="button_snap">SNAP</string>
@@ -13,4 +10,10 @@
     <string name="edit_longitude_hint">longitude</string>
     <string name="edit_latitude_hint">latitude</string>
     <string name="iv_content_descrip">Photo</string>
+    <string name="imViewMain">ViewMain</string>
+    <string name="hintFormDateTime">hintFormDateTime</string>
+    <string name="hintToDateTime">hintToDateTime</string>
+    <string name="hintKeywords">hintKeywords</string>
+    <string name="hintLat">hintLat</string>
+    <string name="hintLng">hintLng</string>
 </resources>

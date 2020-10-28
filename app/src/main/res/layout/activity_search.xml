@@ -29,6 +29,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
+        android:hint="@string/hintFormDateTime"
         android:id="@+id/etFromDateTime"
         android:layout_width="265dp"
         android:layout_height="53dp"
@@ -38,7 +39,8 @@
         android:inputType="date|time"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:autofillHints="" />
 
     <TextView
         android:id="@+id/tvLng"
@@ -51,6 +53,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
+        android:hint="@string/hintToDateTime"
         android:id="@+id/etToDateTime"
         android:layout_width="265dp"
         android:layout_height="54dp"
@@ -60,7 +63,8 @@
         android:inputType="date|time"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etFromDateTime" />
+        app:layout_constraintTop_toBottomOf="@+id/etFromDateTime"
+        android:autofillHints="" />
 
     <TextView
         android:id="@+id/tvToDateTime"
@@ -83,6 +87,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
+        android:hint="@string/hintKeywords"
         android:id="@+id/etKeywords"
         android:layout_width="265dp"
         android:layout_height="60dp"
@@ -91,7 +96,8 @@
         android:ems="10"
         android:textSize="24sp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etLng" />
+        app:layout_constraintTop_toBottomOf="@+id/etLng"
+        android:autofillHints=""/>
 
     <Button
         android:id="@+id/btnCancel"
@@ -115,6 +121,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
+        android:hint="@string/hintLat"
         android:id="@+id/etLat"
         android:layout_width="265dp"
         android:layout_height="58dp"
@@ -123,9 +130,11 @@
         android:ems="10"
         android:inputType="numberSigned|numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etToDateTime" />
+        app:layout_constraintTop_toBottomOf="@+id/etToDateTime"
+        android:autofillHints="" />
 
     <EditText
+        android:hint="@string/hintLng"
         android:id="@+id/etLng"
         android:layout_width="265dp"
         android:layout_height="55dp"
@@ -134,6 +143,7 @@
         android:ems="10"
         android:inputType="numberSigned|numberDecimal"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/etLat" />
+        app:layout_constraintTop_toBottomOf="@+id/etLat"
+        android:autofillHints="" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

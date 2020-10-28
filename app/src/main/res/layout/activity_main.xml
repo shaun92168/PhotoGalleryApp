@@ -40,7 +40,8 @@
         android:inputType="numberSigned|numberDecimal"
         android:textSize="12sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/etDate"
-        app:layout_constraintEnd_toStartOf="@+id/etNumDecLongitudeMain" />
+        app:layout_constraintEnd_toStartOf="@+id/etNumDecLongitudeMain"
+        android:autofillHints="" />
 
     <EditText
         android:id="@+id/etNumDecLongitudeMain"
@@ -52,7 +53,8 @@
         android:inputType="numberSigned|numberDecimal"
         android:textSize="12sp"
         app:layout_constraintBaseline_toBaselineOf="@+id/etNumDecLatitudeMain"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        android:autofillHints="" />
 
     <EditText
         android:id="@+id/etCaptionMain"
@@ -118,6 +120,7 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <EditText
+        android:hint="@string/imViewMain"
         android:id="@+id/etDate"
         android:layout_width="144dp"
         android:layout_height="34dp"
@@ -126,7 +129,8 @@
         android:inputType="date"
         android:textSize="12sp"
         app:layout_constraintStart_toEndOf="@+id/tvDate"
-        app:layout_constraintTop_toBottomOf="@+id/imViewMain" />
+        app:layout_constraintTop_toBottomOf="@+id/imViewMain"
+        android:autofillHints="" />
 
     <Button
         android:id="@+id/btPrevious"
